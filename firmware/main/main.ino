@@ -27,7 +27,7 @@ configuration config;
 
 X509List cert(TELEGRAM_CERTIFICATE_ROOT);
 WiFiClientSecure client;
-UniversalTelegramBot bot(config.bot_token, client);
+UniversalTelegramBot bot("", client);
 
 // Operational variables
 uint8_t button_count = 0;
@@ -88,6 +88,8 @@ void setup() {
   EEPROM.begin(512);
   delay(100);
   EEPROM.get(0, config);
+  // Set the Telegram token
+  bot.updateToken(config.bot_token);
   // Config UTC time
   configTime(0, 0, "pool.ntp.org");
   // Config the trust certs
