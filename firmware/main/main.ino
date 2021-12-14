@@ -3,6 +3,7 @@
 #include <WiFiClientSecure.h>
 #include <UniversalTelegramBot.h>
 
+
 // Config
 struct configuration {
   char ssid[50];
@@ -20,19 +21,25 @@ configuration config;
 #define START_MESSAGE               "Bienvenide.\n\nUsa el comando /vincular para subscribirte a las notificaciones del botón."
 #define LINK_MESSAGE                "Pulsa el botón 5 veces para vincular esta cuenta de Telegram.\n\nDispones de 20 segundos para ello."
 #define LINK_SUCCESS_ADMIN_MESSAGE  "Nueva cuenta vinculada:"
-#define LINK_SUCCESS_MESSAGE        "cuenta vinculada con éxito."
+#define LINK_SUCCESS_MESSAGE        "Cuenta vinculada con éxito."
 #define LINK_FAIL_MESSAGE           "La vinculación ha fallado."
 #define LINK_TIMEOUT                20000
 #define BOT_POOL_DELAY              1000
+#define PUSH_BUTTON_PIN             13
 
 X509List cert(TELEGRAM_CERTIFICATE_ROOT);
 WiFiClientSecure client;
 UniversalTelegramBot bot("", client);
 
 // Operational variables
-uint8_t button_count = 0;
+volatile int button_count = 0;
+volatile bool push_button_flag = false;
 unsigned long start_link_time;
 unsigned long last_bot_pool;
+
+ICACHE_RAM_ATTR void pushButtonInterrupt() {
+  push_button_flag = true;
+}
 
 void setChatId(String new_id) {
   // Save into the config var
@@ -61,7 +68,11 @@ void analyzeCommand(int numNewMessages) {
       bot.sendMessage(chat_id, LINK_MESSAGE, "");
       start_link_time = millis();
       while (millis() - start_link_time < LINK_TIMEOUT && button_count < 6) {
-        if (button_count >= 5) {
+        if (push_button_flag) {
+          push_button_flag = false;
+          button_count++;
+        }
+        if (button_count == 5) {
           setChatId(chat_id);
           button_count++;
         }
@@ -75,13 +86,16 @@ void analyzeCommand(int numNewMessages) {
       } else {
         bot.sendMessage(chat_id, LINK_FAIL_MESSAGE, "");
       }
-      
+      button_count = 0;      
     }
 
   }
 }
 
 void setup() {
+  // Set IO
+  pinMode(PUSH_BUTTON_PIN, INPUT);
+  attachInterrupt(digitalPinToInterrupt(PUSH_BUTTON_PIN), pushButtonInterrupt, RISING);
   // Set comms
   Serial.begin(115200);
   // Get the config data from eeprom
