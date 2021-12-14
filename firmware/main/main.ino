@@ -5,6 +5,8 @@
 #include <ESP8266WebServer.h>
 #include "constants.h"
 #include "struct.h"
+#include <stdio.h>
+#include <string.h>
 
 // Instances
 X509List cert(TELEGRAM_CERTIFICATE_ROOT);
@@ -78,7 +80,7 @@ bool setChatId(String new_id) {
   // Update the eeprom memory
   EEPROM.put(0,config);
   EEPROM.commit();
-  return saved
+  return saved;
 }
 
 // Telegram handler
@@ -125,6 +127,7 @@ void enableApMode() {
   server.on("/", handleRoot);
   server.on("/save", handleSave);
   server.begin();
+  push_button_flag = false;
 }
 
 void setup() {
@@ -155,7 +158,7 @@ void setup() {
     WiFi.begin(config.ssid, config.password);
     // ToDo: LED alert
     start_wifi_time = millis();
-    while (WiFi.status() != WL_CONNECTED && millis() - start_wifi_time > WIFI_TIMEOUT) {
+    while (WiFi.status() != WL_CONNECTED && millis() - start_wifi_time < WIFI_TIMEOUT) {
       delay(1000);
       Serial.print(".");
     }
@@ -182,5 +185,16 @@ void loop() {
   // Handle web clients
   if (ap_mode) {
     server.handleClient();
+  }
+  // Send the message
+  if (!ap_mode && push_button_flag) {
+    if (strlen(config.chat_id_a) > 2)
+      bot.sendMessage(config.chat_id_a, config.message, "");
+    if (strlen(config.chat_id_b) > 2)
+      bot.sendMessage(config.chat_id_b, config.message, "");
+    if (strlen(config.chat_id_c) > 2)
+      bot.sendMessage(config.chat_id_c, config.message, "");
+    if (strlen(config.chat_id_d) > 2)
+      bot.sendMessage(config.chat_id_d, config.message, "");
   }
 }
