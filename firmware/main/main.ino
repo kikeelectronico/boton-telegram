@@ -188,6 +188,7 @@ void loop() {
   }
   // Send the message
   if (!ap_mode && push_button_flag) {
+    push_button_flag = false;
     if (strlen(config.chat_id_a) > 2)
       bot.sendMessage(config.chat_id_a, config.message, "");
     if (strlen(config.chat_id_b) > 2)
