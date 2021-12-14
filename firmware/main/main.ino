@@ -20,7 +20,7 @@ configuration config;
 // Constants            
 #define START_MESSAGE               "Bienvenide.\n\nUsa el comando /vincular para subscribirte a las notificaciones del botón."
 #define LINK_MESSAGE                "Pulsa el botón 5 veces para vincular esta cuenta de Telegram.\n\nDispones de 20 segundos para ello."
-#define LINK_SUCCESS_ADMIN_MESSAGE  "Nueva cuenta vinculada:"
+#define LINK_SUCCESS_ADMIN_MESSAGE  "Nueva cuenta vinculada: "
 #define LINK_SUCCESS_MESSAGE        "Cuenta vinculada con éxito."
 #define LINK_FAIL_MESSAGE           "La vinculación ha fallado."
 #define LINK_TIMEOUT                20000
@@ -80,8 +80,7 @@ void analyzeCommand(int numNewMessages) {
       }
       if (button_count == 6) {
         String from_name = bot.messages[i].from_name;
-        bot.sendMessage(config.chat_id_a, LINK_SUCCESS_ADMIN_MESSAGE, "");
-        bot.sendMessage(config.chat_id_a, from_name, "");
+        bot.sendMessage(config.chat_id_a, LINK_SUCCESS_ADMIN_MESSAGE + from_name, "");
         bot.sendMessage(chat_id, LINK_SUCCESS_MESSAGE, "");        
       } else {
         bot.sendMessage(chat_id, LINK_FAIL_MESSAGE, "");
@@ -94,7 +93,7 @@ void analyzeCommand(int numNewMessages) {
 
 void setup() {
   // Set IO
-  pinMode(PUSH_BUTTON_PIN, INPUT);
+  pinMode(PUSH_BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(PUSH_BUTTON_PIN), pushButtonInterrupt, RISING);
   // Set comms
   Serial.begin(115200);
