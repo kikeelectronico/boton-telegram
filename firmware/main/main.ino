@@ -26,16 +26,19 @@ configuration config;
 #define LINK_TIMEOUT                20000
 #define BOT_POOL_DELAY              1000
 #define PUSH_BUTTON_PIN             13
+#define AP_NAME                     "Soy tu botón"
+#define AP_PASSWORD                 "vamosaconfigurarcosas"
 
 X509List cert(TELEGRAM_CERTIFICATE_ROOT);
 WiFiClientSecure client;
 UniversalTelegramBot bot("", client);
 
 // Operational variables
-volatile int button_count = 0;
+int button_count = 0;
 volatile bool push_button_flag = false;
 unsigned long start_link_time;
 unsigned long last_bot_pool;
+bool ap_mode = false;
 
 ICACHE_RAM_ATTR void pushButtonInterrupt() {
   push_button_flag = true;
@@ -92,11 +95,15 @@ void analyzeCommand(int numNewMessages) {
 }
 
 void setup() {
+  // Set comms
+  Serial.begin(115200);
   // Set IO
   pinMode(PUSH_BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(PUSH_BUTTON_PIN), pushButtonInterrupt, RISING);
-  // Set comms
-  Serial.begin(115200);
+  if (!digitalRead(PUSH_BUTTON_PIN)) {
+    ap_mode = true;
+    Serial.println("AP mode enabled");
+  }
   // Get the config data from eeprom
   EEPROM.begin(512);
   delay(100);
@@ -107,16 +114,22 @@ void setup() {
   configTime(0, 0, "pool.ntp.org");
   // Config the trust certs
   client.setTrustAnchors(&cert);
-  // Connect to the network
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(config.ssid, config.password);
-  Serial.println("connecting to WiFi");
-  // ToDo: Timeout
-  // ToDo: LED alert
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.print(".");
+  if (!ap_mode) {
+    // Connect to the network
+    Serial.println("Connecting to WiFi");
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(config.ssid, config.password);
+    // ToDo: Timeout
+    // ToDo: LED alert
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(1000);
+      Serial.print(".");
+    }
+  } else {
+    Serial.println("Creating an AP");
+    WiFi.softAP(AP_NAME, AP_PASSWORD);
   }
+  
 }
 
 void loop() {
