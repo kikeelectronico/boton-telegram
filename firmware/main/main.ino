@@ -18,7 +18,29 @@ struct configuration {
 
 configuration config;
 
-// Constants            
+// Constants
+#define SETTINGS_HOME_PAGE_1          "<html> <head> <meta charset=\"UTF-8\"> </head> <body> \
+                                      <form action=\"/save\"> \
+                                        <label for=\"fname\">SSID</label><br> \
+                                        <input type=\"text\" id=\"ssid\" name=\"ssid\" value=\""      
+#define SETTINGS_HOME_PAGE_2              "\"><br> \
+                                        <label for=\"lname\">Contraseña</label><br> \
+                                        <input type=\"text\" id=\"password\" name=\"password\" value=\""            
+#define SETTINGS_HOME_PAGE_3              "\"><br><br> \
+                                        <label for=\"lname\">Token del bot</label><br> \
+                                        <input type=\"text\" id=\"bot_token\" name=\"bot_token\" value=\""            
+#define SETTINGS_HOME_PAGE_4              "\"><br><br> \
+                                        <input type=\"submit\" value=\"Guardar\"> \
+                                      </form> \
+                                    </body> </html>"
+
+#define SETTINGS_SAVED_SUCCESS_1    "<html> <head> <meta charset=\"UTF-8\"> </head> <body> \
+                                      <p>La configuración se ha guardado correctamente. Reinicia el botón y vuelve a conectar tu dispositivo a "
+#define SETTINGS_SAVED_SUCCESS_2    ".</p> </body> </html>"
+
+#define SETTINGS_SAVED_FAIL           "<html> <head> <meta charset=\"UTF-8\"> </head> <body> \
+                                      <p>Algo ha ido mal. La configuración no se ha guardado.</p> \
+                                    </body> </html>"
 #define START_MESSAGE               "Bienvenide.\n\nUsa el comando /vincular para subscribirte a las notificaciones del botón."
 #define LINK_MESSAGE                "Pulsa el botón 5 veces para vincular esta cuenta de Telegram.\n\nDispones de 20 segundos para ello."
 #define LINK_SUCCESS_ADMIN_MESSAGE  "Nueva cuenta vinculada: "
@@ -47,7 +69,35 @@ ICACHE_RAM_ATTR void pushButtonInterrupt() {
 }
 
 void handleRoot() {
-  server.send(200, "text/html", "Hi");
+  server.send(200, "text/html", SETTINGS_HOME_PAGE_1 + String(config.ssid)
+                              + SETTINGS_HOME_PAGE_2 + String(config.password)
+                              + SETTINGS_HOME_PAGE_3 + String(config.bot_token)
+                              + SETTINGS_HOME_PAGE_4);
+}
+
+void handleSave() {  
+  Serial.print(server.argName(0));
+  Serial.print(" ");
+  Serial.println(server.arg(0));
+  Serial.print(server.argName(1));
+  Serial.print(" ");
+  Serial.print(server.arg(1));
+  Serial.print(server.argName(2));
+  Serial.print(" ");
+  Serial.print(server.arg(2));
+  if (server.argName(0) == "ssid" && server.argName(1) == "password" && server.argName(2) == "bot_token") {
+    // Save the settings
+    server.arg(0).toCharArray(config.ssid, 50);
+    server.arg(1).toCharArray(config.password, 50);
+    server.arg(2).toCharArray(config.bot_token, 50);
+    // Update the eeprom memory
+    EEPROM.put(0,config);
+    EEPROM.commit();
+    server.send(200, "text/html", SETTINGS_SAVED_SUCCESS_1 + server.arg(0) + SETTINGS_SAVED_SUCCESS_2);
+  } else {
+    server.send(200, "text/html", SETTINGS_SAVED_FAIL);
+  }
+  
 }
 
 void setChatId(String new_id) {
@@ -137,6 +187,7 @@ void setup() {
     WiFi.softAP(AP_NAME, AP_PASSWORD);
     Serial.println("Booting the congif server");
     server.on("/", handleRoot);
+    server.on("/save", handleSave);
     server.begin();
   }
   
