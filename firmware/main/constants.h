@@ -26,6 +26,7 @@
 #define LINK_SUCCESS_ADMIN_MESSAGE  "Nueva cuenta vinculada: "
 #define LINK_SUCCESS_MESSAGE        "Cuenta vinculada con éxito."
 #define LINK_FAIL_MESSAGE           "La vinculación ha fallado."
+#define WIFI_TIMEOUT                10000
 #define LINK_TIMEOUT                20000
 #define BOT_POOL_DELAY              1000
 #define PUSH_BUTTON_PIN             13

@@ -16,6 +16,7 @@ ESP8266WebServer server(80);
 configuration config;
 int button_count = 0;
 volatile bool push_button_flag = false;
+unsigned long start_wifi_time;
 unsigned long start_link_time;
 unsigned long last_bot_pool;
 bool ap_mode = false;
@@ -116,6 +117,16 @@ void analyzeCommand(int numNewMessages) {
   }
 }
 
+// Enable AP mode
+void enableApMode() {
+  Serial.println("Creating an AP");
+  WiFi.softAP(AP_NAME, AP_PASSWORD);
+  Serial.println("Booting the congif server");
+  server.on("/", handleRoot);
+  server.on("/save", handleSave);
+  server.begin();
+}
+
 void setup() {
   // Set comms
   Serial.begin(115200);
@@ -142,19 +153,17 @@ void setup() {
     Serial.println("Connecting to WiFi");
     WiFi.mode(WIFI_STA);
     WiFi.begin(config.ssid, config.password);
-    // ToDo: Timeout
     // ToDo: LED alert
-    while (WiFi.status() != WL_CONNECTED) {
+    start_wifi_time = millis();
+    while (WiFi.status() != WL_CONNECTED && millis() - start_wifi_time > WIFI_TIMEOUT) {
       delay(1000);
       Serial.print(".");
     }
+    if (WiFi.status() != WL_CONNECTED) {
+      enableApMode();
+    }
   } else {
-    Serial.println("Creating an AP");
-    WiFi.softAP(AP_NAME, AP_PASSWORD);
-    Serial.println("Booting the congif server");
-    server.on("/", handleRoot);
-    server.on("/save", handleSave);
-    server.begin();
+    enableApMode();
   }
   
 }
