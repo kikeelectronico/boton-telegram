@@ -24,6 +24,7 @@ ICACHE_RAM_ATTR void pushButtonInterrupt() {
   push_button_flag = true;
 }
 
+// Web server handlers
 void handleRoot() {
   server.send(200, "text/html", SETTINGS_HOME_PAGE_1 + String(config.ssid)
                               + SETTINGS_HOME_PAGE_2 + String(config.password)
@@ -56,22 +57,30 @@ void handleSave() {
   
 }
 
-void setChatId(String new_id) {
+// Save a new chat id
+bool setChatId(String new_id) {
+  bool saved = false;
   // Save into the config var
   if(String(config.chat_id_a) == "") {
     new_id.toCharArray(config.chat_id_a, 50);
+    saved = true;
   } else if(String(config.chat_id_b) == "") {
     new_id.toCharArray(config.chat_id_b, 50);
+    saved = true;
   } else if(String(config.chat_id_c) == "") {
     new_id.toCharArray(config.chat_id_c, 50);
+    saved = true;
   } else if(String(config.chat_id_d) == "") {
     new_id.toCharArray(config.chat_id_d, 50);
+    saved = true;
   }
   // Update the eeprom memory
   EEPROM.put(0,config);
   EEPROM.commit();
+  return saved
 }
 
+// Telegram handler
 void analyzeCommand(int numNewMessages) {
   for (int i=0; i<numNewMessages; i++) {    
     String text = bot.messages[i].text;
@@ -82,18 +91,19 @@ void analyzeCommand(int numNewMessages) {
     if (text == "/vincular") {
       bot.sendMessage(chat_id, LINK_MESSAGE, "");
       start_link_time = millis();
+      bool linked = false;
       while (millis() - start_link_time < LINK_TIMEOUT && button_count < 6) {
         if (push_button_flag) {
           push_button_flag = false;
           button_count++;
         }
         if (button_count == 5) {
-          setChatId(chat_id);
+          linked = setChatId(chat_id);
           button_count++;
         }
         delay(100);
       }
-      if (button_count == 6) {
+      if (linked) {
         String from_name = bot.messages[i].from_name;
         bot.sendMessage(config.chat_id_a, LINK_SUCCESS_ADMIN_MESSAGE + from_name, "");
         bot.sendMessage(chat_id, LINK_SUCCESS_MESSAGE, "");        
