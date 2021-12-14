@@ -33,5 +33,6 @@
 #define LINK_TIMEOUT                20000
 #define BOT_POOL_DELAY              1000
 #define PUSH_BUTTON_PIN             13
+#define LED_PIN                     12
 #define AP_NAME                     "Soy tu botón"
 #define AP_PASSWORD                 "vamosaconfigurarcosas"

@@ -3,6 +3,7 @@
 #include <WiFiClientSecure.h>
 #include <UniversalTelegramBot.h>
 #include <ESP8266WebServer.h>
+#include <Adafruit_NeoPixel.h>
 #include "constants.h"
 #include "struct.h"
 #include <stdio.h>
@@ -12,6 +13,7 @@
 X509List cert(TELEGRAM_CERTIFICATE_ROOT);
 WiFiClientSecure client;
 UniversalTelegramBot bot("", client);
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(1, LED_PIN, NEO_GRB + NEO_KHZ800);
 ESP8266WebServer server(80);
 
 // Operational variables
@@ -115,6 +117,14 @@ void analyzeCommand(int numNewMessages) {
   }
 }
 
+void led(bool on, uint8_t r, uint8_t g, uint8_t b) {
+  if (on) {
+    uint32_t color = pixels.Color(r,g,b);
+    pixels.setPixelColor(0, color);
+    pixels.show();
+  }
+}
+
 // Enable AP mode
 void enableApMode() {
   Serial.println("Creating an AP");
@@ -129,7 +139,14 @@ void enableApMode() {
 void setup() {
   // Set comms
   Serial.begin(115200);
-  Serial.println("\nHi, I am your button.");
+  // Begin the LED
+  pixels.begin();
+  // Welcome
+  Serial.println("\nHi. I am your button.");
+  for (uint8_t i = 0; i < 255; i++) {
+    led(true,0,0,i);
+    delay(10);
+  }
   // Set IO
   pinMode(PUSH_BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(PUSH_BUTTON_PIN), pushButtonInterrupt, RISING);
