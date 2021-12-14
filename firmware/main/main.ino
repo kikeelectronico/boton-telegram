@@ -2,6 +2,7 @@
 #include <EEPROM.h>
 #include <WiFiClientSecure.h>
 #include <UniversalTelegramBot.h>
+#include <ESP8266WebServer.h>
 
 
 // Config
@@ -32,6 +33,7 @@ configuration config;
 X509List cert(TELEGRAM_CERTIFICATE_ROOT);
 WiFiClientSecure client;
 UniversalTelegramBot bot("", client);
+ESP8266WebServer server(80);
 
 // Operational variables
 int button_count = 0;
@@ -42,6 +44,10 @@ bool ap_mode = false;
 
 ICACHE_RAM_ATTR void pushButtonInterrupt() {
   push_button_flag = true;
+}
+
+void handleRoot() {
+  server.send(200, "text/html", "Hi");
 }
 
 void setChatId(String new_id) {
@@ -129,6 +135,9 @@ void setup() {
   } else {
     Serial.println("Creating an AP");
     WiFi.softAP(AP_NAME, AP_PASSWORD);
+    Serial.println("Booting the congif server");
+    server.on("/", handleRoot);
+    server.begin();
   }
   
 }
@@ -143,5 +152,9 @@ void loop() {
       buffer_size = bot.getUpdates(bot.last_message_received + 1);
     }
     last_bot_pool = millis();
+  }
+  // Handle web clients
+  if (ap_mode) {
+    server.handleClient();
   }
 }
