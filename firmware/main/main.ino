@@ -97,6 +97,7 @@ void analyzeCommand(int numNewMessages) {
 void setup() {
   // Set comms
   Serial.begin(115200);
+  Serial.println("\nHi, I am your button.");
   // Set IO
   pinMode(PUSH_BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(PUSH_BUTTON_PIN), pushButtonInterrupt, RISING);
