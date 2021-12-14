@@ -6,10 +6,13 @@
 #define SETTINGS_HOME_PAGE_2              "\"><br> \
                                         <label for=\"lname\">Contraseña</label><br> \
                                         <input type=\"text\" id=\"password\" name=\"password\" value=\""            
-#define SETTINGS_HOME_PAGE_3              "\"><br><br> \
+#define SETTINGS_HOME_PAGE_3              "\"><br> \
                                         <label for=\"lname\">Token del bot</label><br> \
                                         <input type=\"text\" id=\"bot_token\" name=\"bot_token\" value=\""            
-#define SETTINGS_HOME_PAGE_4              "\"><br><br> \
+#define SETTINGS_HOME_PAGE_4              "\"><br> \
+                                        <label for=\"lname\">Mensaje</label><br> \
+                                        <input type=\"text\" id=\"message\" name=\"message\" value=\""            
+#define SETTINGS_HOME_PAGE_5              "\"><br><br> \
                                         <input type=\"submit\" value=\"Guardar\"> \
                                       </form> \
                                     </body> </html>"

@@ -32,24 +32,20 @@ void handleRoot() {
   server.send(200, "text/html", SETTINGS_HOME_PAGE_1 + String(config.ssid)
                               + SETTINGS_HOME_PAGE_2 + String(config.password)
                               + SETTINGS_HOME_PAGE_3 + String(config.bot_token)
+                              + SETTINGS_HOME_PAGE_4 + String(config.message)
                               + SETTINGS_HOME_PAGE_4);
 }
 
-void handleSave() {  
-  Serial.print(server.argName(0));
-  Serial.print(" ");
-  Serial.println(server.arg(0));
-  Serial.print(server.argName(1));
-  Serial.print(" ");
-  Serial.print(server.arg(1));
-  Serial.print(server.argName(2));
-  Serial.print(" ");
-  Serial.print(server.arg(2));
-  if (server.argName(0) == "ssid" && server.argName(1) == "password" && server.argName(2) == "bot_token") {
+void handleSave() {
+  if (server.argName(0) == "ssid"
+      && server.argName(1) == "password"
+      && server.argName(2) == "bot_token"
+      && server.argName(3) == "message") {
     // Save the settings
     server.arg(0).toCharArray(config.ssid, 50);
     server.arg(1).toCharArray(config.password, 50);
     server.arg(2).toCharArray(config.bot_token, 50);
+    server.arg(3).toCharArray(config.message, 50);
     // Update the eeprom memory
     EEPROM.put(0,config);
     EEPROM.commit();
