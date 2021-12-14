@@ -1,5 +1,5 @@
 // Constants
-#define SETTINGS_HOME_PAGE_1          "<html> <head> <meta charset=\"UTF-8\"> </head> <body> \
+#define SETTINGS_HOME_PAGE_1        "<html> <head> <meta charset=\"UTF-8\"> </head> <body> \
                                       <form action=\"/save\"> \
                                         <label for=\"fname\">SSID</label><br> \
                                         <input type=\"text\" id=\"ssid\" name=\"ssid\" value=\""      

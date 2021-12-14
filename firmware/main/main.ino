@@ -33,7 +33,7 @@ void handleRoot() {
                               + SETTINGS_HOME_PAGE_2 + String(config.password)
                               + SETTINGS_HOME_PAGE_3 + String(config.bot_token)
                               + SETTINGS_HOME_PAGE_4 + String(config.message)
-                              + SETTINGS_HOME_PAGE_4);
+                              + SETTINGS_HOME_PAGE_5);
 }
 
 void handleSave() {
