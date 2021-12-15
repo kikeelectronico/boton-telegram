@@ -52,8 +52,20 @@ void handleSave() {
     EEPROM.put(0,config);
     EEPROM.commit();
     server.send(200, "text/html", SETTINGS_SAVED_SUCCESS_1 + server.arg(0) + SETTINGS_SAVED_SUCCESS_2);
+    for(uint8_t i = 0; i < 2; i++) {
+      led(0,255,0);
+      delay(200);
+      led(255,255,0);
+      delay(200);
+    }
   } else {
     server.send(200, "text/html", SETTINGS_SAVED_FAIL);
+    for(uint8_t i = 0; i < 5; i++) {
+      led(255,0,0);
+      delay(200);
+      led(255,255,0);
+      delay(200);
+    }
   }
   
 }
@@ -91,6 +103,7 @@ void analyzeCommand(int numNewMessages) {
     }
     if (text == "/vincular") {
       bot.sendMessage(chat_id, LINK_MESSAGE, "");
+      led(255,0,255);
       start_link_time = millis();
       bool linked = false;
       while (millis() - start_link_time < LINK_TIMEOUT && button_count < 6) {
@@ -106,23 +119,35 @@ void analyzeCommand(int numNewMessages) {
       }
       if (linked) {
         String from_name = bot.messages[i].from_name;
+        for(uint8_t i = 0; i < 2; i++) {
+          led(0,255,0);
+          delay(200);
+          led(255,0,255);
+          delay(200);
+        }
         bot.sendMessage(config.chat_id_a, LINK_SUCCESS_ADMIN_MESSAGE + from_name, "");
-        bot.sendMessage(chat_id, LINK_SUCCESS_MESSAGE, "");        
+        bot.sendMessage(chat_id, LINK_SUCCESS_MESSAGE, "");   
       } else {
+        for(uint8_t i = 0; i < 5; i++) {
+          led(255,0,0);
+          delay(200);
+          led(255,0,255);
+          delay(200);
+        }
         bot.sendMessage(chat_id, LINK_FAIL_MESSAGE, "");
       }
-      button_count = 0;      
+      button_count = 0;
+      push_button_flag = false;
+      led(0,255,0); 
     }
 
   }
 }
 
-void led(bool on, uint8_t r, uint8_t g, uint8_t b) {
-  if (on) {
-    uint32_t color = pixels.Color(r,g,b);
-    pixels.setPixelColor(0, color);
-    pixels.show();
-  }
+void led(uint8_t r, uint8_t g, uint8_t b) {
+  uint32_t color = pixels.Color(r,g,b);
+  pixels.setPixelColor(0, color);
+  pixels.show();
 }
 
 // Enable AP mode
@@ -134,6 +159,7 @@ void enableApMode() {
   server.on("/save", handleSave);
   server.begin();
   push_button_flag = false;
+  led(255,255,0);
 }
 
 void setup() {
@@ -143,10 +169,11 @@ void setup() {
   pixels.begin();
   // Welcome
   Serial.println("\nHi. I am your button.");
-  for (uint8_t i = 0; i < 255; i++) {
-    led(true,0,0,i);
-    delay(10);
+  for (uint8_t i = 0; i < 200; i+=10) {
+    led(0,0,i);
+    delay(100);
   }
+  led(0,0,0);
   // Set IO
   pinMode(PUSH_BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(PUSH_BUTTON_PIN), pushButtonInterrupt, RISING);
@@ -172,11 +199,23 @@ void setup() {
     // ToDo: LED alert
     start_wifi_time = millis();
     while (WiFi.status() != WL_CONNECTED && millis() - start_wifi_time < WIFI_TIMEOUT) {
-      delay(1000);
       Serial.print(".");
+      led(0,0,255);
+      delay(500);
+      led(0,0,0);
+      delay(500);
     }
     if (WiFi.status() != WL_CONNECTED) {
+      for(uint8_t i = 0; i < 5; i++) {
+        led(0,0,255);
+        delay(200);
+        led(255,0,0);
+        delay(200);
+      }
+      led(0,0,0);
       enableApMode();
+    } else {
+      led(0,255,0);
     }
   } else {
     enableApMode();
@@ -202,6 +241,12 @@ void loop() {
   // Send the message
   if (!ap_mode && push_button_flag) {
     push_button_flag = false;
+    for(uint8_t i = 0; i < 2; i++) {
+      led(0,0,0);
+      delay(200);
+      led(0,255,0);
+      delay(200);
+    }
     if (strlen(config.chat_id_a) > 2)
       bot.sendMessage(config.chat_id_a, config.message, "");
     if (strlen(config.chat_id_b) > 2)
