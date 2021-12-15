@@ -107,16 +107,27 @@ void analyzeCommand(int numNewMessages) {
       while (millis() - start_link_time < LINK_TIMEOUT && !push_button_flag) {
         delay(100);
       }
+
       if (push_button_flag) {
-        String from_name = bot.messages[i].from_name;
-        for(uint8_t i = 0; i < 2; i++) {
-          led(0,255,0);
-          delay(200);
-          led(255,0,255);
-          delay(200);
-        }
-        bot.sendMessage(config.chat_id_a, LINK_SUCCESS_ADMIN_MESSAGE + from_name, "");
-        bot.sendMessage(chat_id, LINK_SUCCESS_MESSAGE, "");   
+        if (setChatId(chat_id)) {
+          String from_name = bot.messages[i].from_name;
+          for(uint8_t i = 0; i < 2; i++) {
+            led(0,255,0);
+            delay(200);
+            led(255,0,255);
+            delay(200);
+          }
+          //bot.sendMessage(config.chat_id_a, LINK_SUCCESS_ADMIN_MESSAGE + from_name, "");
+          bot.sendMessage(chat_id, LINK_SUCCESS_MESSAGE, "");   
+        } else {
+          for(uint8_t i = 0; i < 5; i++) {
+            led(255,0,0);
+            delay(200);
+            led(255,0,255);
+            delay(200);
+          }
+          bot.sendMessage(chat_id, LINK_FAIL_MESSAGE, "");
+        }        
       } else {
         for(uint8_t i = 0; i < 5; i++) {
           led(255,0,0);
