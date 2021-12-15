@@ -1,5 +1,5 @@
 // Constants
-#define SETTINGS_HOME_PAGE_1        "<html> <head> <meta charset=\"UTF-8\"> </head> <body> \
+#define SETTINGS_HOME_PAGE_1        "<html> <head> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> <meta charset=\"UTF-8\"> </head> <body> \
                                       <form action=\"/save\"> \
                                         <label for=\"fname\">SSID</label><br> \
                                         <input type=\"text\" id=\"ssid\" name=\"ssid\" value=\""      
@@ -17,11 +17,11 @@
                                       </form> \
                                     </body> </html>"
 
-#define SETTINGS_SAVED_SUCCESS_1    "<html> <head> <meta charset=\"UTF-8\"> </head> <body> \
+#define SETTINGS_SAVED_SUCCESS_1    "<html> <head> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> <meta charset=\"UTF-8\"> </head> <body> \
                                       <p>La configuración se ha guardado correctamente. Reinicia el botón y vuelve a conectar tu dispositivo a "
 #define SETTINGS_SAVED_SUCCESS_2    ".</p> </body> </html>"
 
-#define SETTINGS_SAVED_FAIL           "<html> <head> <meta charset=\"UTF-8\"> </head> <body> \
+#define SETTINGS_SAVED_FAIL           "<html> <head> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> <meta charset=\"UTF-8\"> </head> <body> \
                                       <p>Algo ha ido mal. La configuración no se ha guardado.</p> \
                                     </body> </html>"
 #define START_MESSAGE               "Bienvenide.\n\nUsa el comando /vincular para subscribirte a las notificaciones del botón."
