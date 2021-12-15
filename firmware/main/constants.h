@@ -25,7 +25,7 @@
                                       <p>Algo ha ido mal. La configuración no se ha guardado.</p> \
                                     </body> </html>"
 #define START_MESSAGE               "Bienvenide.\n\nUsa el comando /vincular para subscribirte a las notificaciones del botón."
-#define LINK_MESSAGE                "Pulsa el botón 5 veces para vincular esta cuenta de Telegram.\n\nDispones de 20 segundos para ello."
+#define LINK_MESSAGE                "1. Espera al color morado.\n2. Pulsa el botón para vincular esta cuenta de Telegram.\n\nDispones de 20 segundos para ello."
 #define LINK_SUCCESS_ADMIN_MESSAGE  "Nueva cuenta vinculada: "
 #define LINK_SUCCESS_MESSAGE        "Cuenta vinculada con éxito."
 #define LINK_FAIL_MESSAGE           "La vinculación ha fallado."

@@ -18,7 +18,6 @@ ESP8266WebServer server(80);
 
 // Operational variables
 configuration config;
-int button_count = 0;
 volatile bool push_button_flag = false;
 unsigned long start_wifi_time;
 unsigned long start_link_time;
@@ -105,19 +104,10 @@ void analyzeCommand(int numNewMessages) {
       bot.sendMessage(chat_id, LINK_MESSAGE, "");
       led(255,0,255);
       start_link_time = millis();
-      bool linked = false;
-      while (millis() - start_link_time < LINK_TIMEOUT && button_count < 6) {
-        if (push_button_flag) {
-          push_button_flag = false;
-          button_count++;
-        }
-        if (button_count == 5) {
-          linked = setChatId(chat_id);
-          button_count++;
-        }
+      while (millis() - start_link_time < LINK_TIMEOUT && !push_button_flag) {
         delay(100);
       }
-      if (linked) {
+      if (push_button_flag) {
         String from_name = bot.messages[i].from_name;
         for(uint8_t i = 0; i < 2; i++) {
           led(0,255,0);
@@ -136,7 +126,6 @@ void analyzeCommand(int numNewMessages) {
         }
         bot.sendMessage(chat_id, LINK_FAIL_MESSAGE, "");
       }
-      button_count = 0;
       push_button_flag = false;
       led(0,255,0); 
     }
