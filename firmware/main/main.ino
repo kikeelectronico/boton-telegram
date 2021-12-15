@@ -196,7 +196,6 @@ void setup() {
     Serial.println("Connecting to WiFi");
     WiFi.mode(WIFI_STA);
     WiFi.begin(config.ssid, config.password);
-    // ToDo: LED alert
     start_wifi_time = millis();
     while (WiFi.status() != WL_CONNECTED && millis() - start_wifi_time < WIFI_TIMEOUT) {
       Serial.print(".");
