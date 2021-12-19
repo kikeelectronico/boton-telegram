@@ -1,7 +1,7 @@
 # El botón de Telegram
 Se trata de un botón que envia un mesaje a través de Telegram hasta a cuatro usuarios.
 
-<img src="https://raw.githubusercontent.com/kikeelectronico/boton-telegram/main/image.jpg">
+<img src="https://raw.githubusercontent.com/kikeelectronico/boton-telegram/main/photos/cover.jpg">
 
 # Materiales
 
