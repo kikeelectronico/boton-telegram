@@ -11,6 +11,15 @@ Se trata de un botón que envia un mesaje a través de Telegram hasta a cuatro u
 - PLA o material similar
 - 2 tuercas M3
 - 2 tornillos 45xM3
+- Cable unifilar
+- Tubo termoretráctil
+
+# Herramientas
+
+- PC
+- Arduino IDE
+- Soldador
+- Impresora 3D
 
 # Construcción
 
@@ -18,11 +27,13 @@ Se trata de un botón que envia un mesaje a través de Telegram hasta a cuatro u
 2. Coloca el final de carrera usando los pines horizontales del centro de la pieza llamada Base.
 3. Pega el LED detrás del agujero frontal de la base.
 4. Coloca la placa WeMos D1 mini en el espacio reservado en el interior de la base.
-5. Programa la placa usando el firmware y el IDE de Arduino.
-6. Inserta 2 tuercas de métrica 3 en los huecos hexagonales de la pieza llamada Tapa.
-7. Encaja la pieza llamada Botón en la pieza Tapa a través los agujeros redondos.
-8. Encaja la Tapa en la Base y cierrala con dos tornillos de métrica 3 y 45 mm de largo desde la parte inferior.
-9. Coloca las piezas decorativas: antideslizante y anillo.
+5. Conecta el LED a Vcc, GND y al pin digital D6.
+6. Conecta el final de carrera a GND y al pin digital D7.
+7. Programa la placa usando el firmware y el IDE de Arduino.
+8. Inserta 2 tuercas de métrica 3 en los huecos hexagonales de la pieza llamada Tapa.
+9. Encaja la pieza llamada Botón en la pieza Tapa a través los agujeros redondos.
+10. Encaja la Tapa en la Base y cierrala con dos tornillos de métrica 3 y 45 mm de largo desde la parte inferior.
+11. Coloca las piezas decorativas: antideslizante y anillo.
 
 # Conectar a tu red WiFi y configura el mensaje
 
